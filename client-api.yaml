@@ -3,8 +3,8 @@ info:
   description: 'API trên mạch,'
   version: 1.0.0
   title: API EcoVison
-host: petstore.swagger.io
-basePath: /v2
+host: localhost:2904
+basePath: /
 tags:
   - name: local
     description: This connection is in local
