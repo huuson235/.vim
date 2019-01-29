@@ -3,13 +3,11 @@ info:
   description: API trên server
   version: 1.0.0
   title: API EcoVison - Server
-host: localhost:2904
+host: 'localhost:2904'
 basePath: /
 tags:
   - name: local
     description: This connection is in local
-  # - name: internet
-  #   description: This API need the internet
 schemes:
   - http
 paths:
@@ -80,6 +78,8 @@ definitions:
           - STAFF
           - GUEST
           - VIP
+      avatar:
+        type: string
       features:
         type: array
         format: array of feature128
@@ -101,6 +101,12 @@ definitions:
         type: string
       IP:
         type: string
+      createdAt:
+        type: string
+        format: timestamp
+      updatedAt:
+        type: string
+        format: timestamp
       cameras:
         type: array
         items:
@@ -118,6 +124,12 @@ definitions:
         type: string
       note:
         type: string
+      createdAt:
+        type: string
+        format: timestamp
+      updatedAt:
+        type: string
+        format: timestamp
   dailydata:
     type: object
     required:
@@ -157,4 +169,3 @@ definitions:
         format: float32
       person:
         $ref: '#/definitions/person'
-
