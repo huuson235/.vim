@@ -1,0 +1,160 @@
+swagger: '2.0'
+info:
+  description: API trên server
+  version: 1.0.0
+  title: API EcoVison - Server
+host: localhost:2904
+basePath: /
+tags:
+  - name: local
+    description: This connection is in local
+  # - name: internet
+  #   description: This API need the internet
+schemes:
+  - http
+paths:
+  /person:
+    post:
+      tags:
+        - local
+      summary: Add new data to traindata
+      description: Server have new data for training and want client save it
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/person'
+      responses:
+        '200':
+          description: OK
+  /dailydata:
+    get:
+      tags:
+        - local
+      summary: Query data by some parameters
+      description: This API for server/PC request for searching
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              personId:
+                type: string
+              from:
+                type: string
+              to:
+                type: string
+              feature:
+                type: array
+                items:
+                  type: number
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/dailydata'
+definitions:
+  person:
+    type: object
+    required:
+      - _id
+      - personId
+      - features
+      - createdAt
+      - updatedAt
+    properties:
+      _id:
+        type: string
+        format: objectId
+      name:
+        type: string
+      type:
+        type: string
+        enum:
+          - STAFF
+          - GUEST
+          - VIP
+      features:
+        type: array
+        format: array of feature128
+        items:
+          type: array
+          items:
+            type: number
+            format: float32
+      createdAt:
+        type: string
+        format: timestamp
+      updatedAt:
+        type: string
+        format: timestamp
+  client:
+    type: object
+    properties:
+      _id:
+        type: string
+      IP:
+        type: string
+      cameras:
+        type: array
+        items:
+          $ref: '#/definitions/camera'
+  camera:
+    type: object
+    properties:
+      _id:
+        type: string
+      localUrl:
+        type: string
+      natUrl:
+        type: string
+      location:
+        type: string
+      note:
+        type: string
+  dailydata:
+    type: object
+    required:
+      - _id
+      - createdAt
+      - minDistance
+      - predictedPersonId
+    properties:
+      _id:
+        type: string
+      camera:
+        $ref: '#/definitions/camera'
+      client:
+        $ref: '#/definitions/client'
+      imageUrl:
+        type: string
+      frameUrl:
+        type: string
+      imageLocalPath:
+        type: string
+      frameLocalPath:
+        type: string
+      feature:
+        type: array
+        format: array of float32
+        items:
+          type: number
+      createdAt:
+        type: string
+        format: timestamp
+      isUnknown:
+        type: boolean
+      isNotSure:
+        type: boolean
+      minDistance:
+        type: number
+        format: float32
+      person:
+        $ref: '#/definitions/person'
+

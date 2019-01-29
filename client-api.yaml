@@ -1,0 +1,176 @@
+swagger: '2.0'
+info:
+  description: 'API trên mạch,'
+  version: 1.0.0
+  title: API EcoVison
+host: petstore.swagger.io
+basePath: /v2
+tags:
+  - name: local
+    description: This connection is in local
+  - name: internet
+    description: This API need the internet
+schemes:
+  - http
+paths:
+  /traindata:
+    get:
+      tags:
+        - local
+      summary: Get data for KNN
+      description: Request to NodeJS to get data for caching
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/person'
+    post:
+      tags:
+        - internet
+      summary: Add new data to traindata
+      description: Server have new data for training and want client save it
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/person'
+      responses:
+        '200':
+          description: OK
+  /dailydata:
+    post:
+      tags:
+        - local
+      summary: Save data to DB
+      description: Send a request for NodeJS to save info to DB
+      parameters:
+        - in: body
+          name: body
+          description: List of property object
+          required: true
+          schema:
+            type: object
+            properties:
+              imageLocalUrl:
+                type: string
+              frameLocalUrl:
+                type: string
+              isUnknown:
+                type: boolean
+              isNotSure:
+                type: boolean
+              minDistance:
+                type: number
+              feature:
+                type: array
+                items:
+                  type: number
+                  format: float32
+              createdAt:
+                type: string
+                format: timestamp
+      responses:
+        '200':
+          description: OK
+    get:
+      tags:
+        - internet
+      summary: Query data by some parameters
+      description: This API for server/PC request for searching
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              personId:
+                type: string
+              from:
+                type: string
+              to:
+                type: string
+              feature:
+                type: array
+                items:
+                  type: number
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/dailydata'
+definitions:
+  person:
+    type: object
+    required:
+      - _id
+      - personId
+      - features
+      - createdAt
+      - updatedAt
+    properties:
+      _id:
+        type: string
+        format: objectId
+      personId:
+        type: string
+        format: objectId
+      features:
+        type: array
+        format: array of feature128
+        items:
+          type: array
+          items:
+            type: number
+            format: float32
+      createdAt:
+        type: string
+        format: timestamp
+      updatedAt:
+        type: string
+        format: timestamp
+  dailydata:
+    type: object
+    required:
+      - _id
+      - createdAt
+      - minDistance
+      - predictedPersonId
+    properties:
+      _id:
+        type: string
+      imageUrl:
+        type: string
+      frameUrl:
+        type: string
+      imageLocalPath:
+        type: string
+      frameLocalPath:
+        type: string
+      feature:
+        type: array
+        format: array of float32
+        items:
+          type: number
+      createdAt:
+        type: string
+        format: timestamp
+      isUnknown:
+        type: boolean
+      isNotSure:
+        type: boolean
+      minDistance:
+        type: number
+        format: float32
+      name:
+        type: string
+      predictedPersonId:
+        type: string
+        format: person.personId
+
